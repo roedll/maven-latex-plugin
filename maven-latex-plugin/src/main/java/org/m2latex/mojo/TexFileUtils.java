@@ -41,11 +41,15 @@ public interface TexFileUtils {
 
 	File getCorrespondingAuxFile(File texFile);
 
+	File getCorrespondingBcfFile(File texFile);
+
 	File getCorrespondingDviFile(File texFile);
 
 	File getCorrespondingLogFile(File texFile);
 
 	File getCorrespondingPdfFile(File texFile);
+
+	File getCorrespondingIdxFile(File texFile);
 
 	File getCorrespondingIstFile(File texFile);
 

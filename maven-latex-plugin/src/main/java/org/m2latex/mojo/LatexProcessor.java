@@ -51,13 +51,12 @@ public class LatexProcessor {
 		log.info("Processing LaTeX file " + texFile);
 
 		runLatex(texFile);
-		if (settings.isUseBiblatex()) {
-			runMakeindex(texFile);
-		}
+		runMakeIndex(texFile);
 
 		if (needBibtexRun(texFile)) {
 			runBibtex(texFile);
 		}
+		
 		int retries = 0;
 		while (retries < 5 && needAnotherLatexRun(texFile)) {
 			log.debug("Latex must be rerun");
@@ -135,7 +134,7 @@ public class LatexProcessor {
 	 *            - Tex file which will be parsed by makeindex.
 	 * @throws CommandLineException
 	 */
-	private void runMakeindex(File texFile) throws CommandLineException {
+	private void runMakeIndex(File texFile) throws CommandLineException {
 		log.debug("Running makeindex on file " + texFile.getName());
 		File workingDir = texFile.getParentFile();
 
@@ -143,6 +142,13 @@ public class LatexProcessor {
 
 		String filePath = null;
 
+		File idxFile = fileUtils.getCorrespondingIdxFile(texFile);
+		if (idxFile.exists()) {
+			filePath = idxFile.getPath();
+			parameter.add(idxFile.getName());
+			log.debug("idx file parameter: " + idxFile.getName());
+		}
+		
 		File istFile = fileUtils.getCorrespondingIstFile(texFile);
 		if (istFile.exists()) {
 			filePath = istFile.getPath();
@@ -184,9 +190,13 @@ public class LatexProcessor {
 	private void runBibtex(File texFile) throws CommandLineException {
 		log.debug("Running BibTeX on file " + texFile.getName());
 		File workingDir = texFile.getParentFile();
-
-		String[] args = new String[] { fileUtils.getCorrespondingAuxFile(
-				texFile).getName() };
+		String[] args;
+		
+		if(settings.getBibtexCommand().equals("biber"))
+			args = new String[] { fileUtils.getCorrespondingBcfFile(texFile).getName() };
+		else
+			args = new String[] { fileUtils.getCorrespondingAuxFile(texFile).getName() };
+		
 		executor.execute(workingDir, settings.getTexPath(),
 				settings.getBibtexCommand(), args);
 	}

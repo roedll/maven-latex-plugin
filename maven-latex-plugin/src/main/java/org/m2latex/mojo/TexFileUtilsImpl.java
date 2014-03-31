@@ -195,6 +195,15 @@ public class TexFileUtilsImpl implements TexFileUtils {
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see org.m2latex.mojo.TexFileUtils#getCorrespondingBcfFile(java.io.File)
+	 */
+	public File getCorrespondingBcfFile(File texFile) {
+		return getFileWithDifferentSuffix(texFile, "bcf");
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.m2latex.mojo.TexFileUtils#getCorrespondingDviFile(java.io.File)
 	 */
 	public File getCorrespondingDviFile(File texFile) {
@@ -217,6 +226,15 @@ public class TexFileUtilsImpl implements TexFileUtils {
 	 */
 	public File getCorrespondingPdfFile(File texFile) {
 		return getFileWithDifferentSuffix(texFile, "pdf");
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.m2latex.mojo.TexFileUtils#getCorrespondingIdxFile(java.io.File)
+	 */
+	public File getCorrespondingIdxFile(File texFile) {
+		return getFileWithDifferentSuffix(texFile, "idx");
 	}
 
 	/*

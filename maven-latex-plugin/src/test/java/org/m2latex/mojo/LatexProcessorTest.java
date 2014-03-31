@@ -49,9 +49,21 @@ public class LatexProcessorTest
 
     private File auxFile = new File( System.getProperty( "tmp.dir" ), "test.aux" );
 
+    private File idxFile = new File( System.getProperty( "tmp.dir" ), "test.idx" );
+
+    private File istFile = new File( System.getProperty( "tmp.dir" ), "test.ist" );
+
+    private File glgFile = new File( System.getProperty( "tmp.dir" ), "test.glg" );
+
+    private File glsFile = new File( System.getProperty( "tmp.dir" ), "test.gls" );
+
+    private File gloFile = new File( System.getProperty( "tmp.dir" ), "test.glo" );
+
     private File tex4htDir = new File( "m2latex", TexFileUtils.TEX4HT_OUTPUT_DIR );
 
     private String[] latexArgsExpected = new String[] { "-interaction=nonstopmode", "--src-specials", texFile.getName() };
+
+    private String[] makeIndexArgsExpected = new String[] { };
 
     private String[] tex4htArgsExpected = new String[] {
         texFile.getName(),
@@ -64,6 +76,7 @@ public class LatexProcessorTest
         throws Exception
     {
         mockRunLatex();
+        mockMakeIndex();
         mockNeedBibtexRun( false );
         mockNeedAnotherLatexRun( false );
 
@@ -78,6 +91,7 @@ public class LatexProcessorTest
         throws Exception
     {
         mockRunLatex();
+        mockMakeIndex();
         mockNeedBibtexRun( true );
         mockRunBibtex();
         mockNeedAnotherLatexRun( true );
@@ -97,6 +111,7 @@ public class LatexProcessorTest
         throws Exception
     {
         mockRunLatex();
+        mockMakeIndex();
         mockNeedBibtexRun( false );
         mockNeedAnotherLatexRun( false );
         mockRunTex4ht();
@@ -141,6 +156,29 @@ public class LatexProcessorTest
         throws CommandLineException
     {
         executor.execute( texFile.getParentFile(), settings.getTexPath(), settings.getTexCommand(), latexArgsExpected );
+        executorCtrl.setMatcher( MockControl.ARRAY_MATCHER );
+        executorCtrl.setReturnValue( null );
+    }
+
+    private void mockMakeIndex()
+        throws CommandLineException
+    {
+        fileUtils.getCorrespondingIdxFile( texFile );
+        fileUtilsCtrl.setReturnValue( idxFile );
+
+        fileUtils.getCorrespondingIstFile( texFile );
+        fileUtilsCtrl.setReturnValue( istFile );
+
+        fileUtils.getCorrespondingGlgFile( texFile );
+        fileUtilsCtrl.setReturnValue( glgFile );
+
+        fileUtils.getCorrespondingGlsFile( texFile );
+        fileUtilsCtrl.setReturnValue( glsFile );
+
+        fileUtils.getCorrespondingGloFile( texFile );
+        fileUtilsCtrl.setReturnValue( gloFile );
+
+		executor.execute( texFile.getParentFile(), settings.getTexPath(), settings.getMakeindexCommand(), makeIndexArgsExpected );
         executorCtrl.setMatcher( MockControl.ARRAY_MATCHER );
         executorCtrl.setReturnValue( null );
     }
